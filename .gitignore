@@ -1,0 +1,4 @@
+/dist/
+*.o
+/bin/*
+/c_src/libvrft.a
