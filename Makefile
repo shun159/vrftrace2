@@ -116,7 +116,7 @@ GO_ENV_EBPF += CGO_LDFLAGS=$(CUSTOM_CGO_LDFLAGS)
 GO_FILES:=$(shell find . -type f -name '*.go' -print)
 
 bin/vrft: $(GO_FILES)
-	$(GO_ENV_EBPF) $(CMD_GO) build -a \
+	$(GO_ENV_EBPF) $(CMD_GO) build \
 		-tags $(GO_TAGS_EBPF) \
 		-ldflags="-w \
 			-extldflags \"$(CGO_EXT_LDFLAGS_EBPF)\" \
