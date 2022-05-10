@@ -26,6 +26,15 @@ type SymbolData struct {
 	AvailSymbols map[string]bool
 }
 
+func TeardownSymbolData() {
+    filenames := []string{vRouterSymList, vmLinuxSymList}
+    for _, filename := range filenames {
+        if err := os.Remove(filename); err != nil {
+            log.Printf("Failed to delete filename: %s error:%s\n", filename, err)
+        }
+    }
+}
+
 func CreateVrouterBTF() string {
 	name := C.CString("")
 	ret := C.deploy_vrouter_btf(&name)
@@ -39,20 +48,22 @@ func CreateVrouterBTF() string {
 }
 
 func CreateVrouterSymList(name string) int {
-	st_name := C.CString("vr_packet")
-	filename := C.CString(vRouterSymList)
-	path := C.CString(name)
-	btf := C.btf__parse_raw(path)
-	defer C.free(unsafe.Pointer(path))
-	defer C.free(unsafe.Pointer(st_name))
-	defer C.free(unsafe.Pointer(filename))
+    for _, st_name := range []string{"vr_packet", "sk_buff"} {
+	    st_name := C.CString(st_name)
+	    filename := C.CString(vRouterSymList)
+	    path := C.CString(name)
+	    btf := C.btf__parse_raw(path)
+	    defer C.free(unsafe.Pointer(path))
+	    defer C.free(unsafe.Pointer(st_name))
+	    defer C.free(unsafe.Pointer(filename))
 
-	ret := C.btf_find_pos(st_name, btf, filename)
-	if ret != 0 {
-		log.Fatalf("Failed to create symbol list")
-	}
+	    ret := C.btf_find_pos(st_name, btf, filename)
+	    if ret != 0 {
+		    log.Fatalf("Failed to create symbol list")
+	    }
+    }
 
-	return int(ret)
+    return 0
 }
 
 func CreateVMLINUXSymList() int {
@@ -163,7 +174,11 @@ func (sym_data *SymbolData) FillSymData() {
 		log.Fatalf("Failed to fill symbols of %s: %s", vRouterSymList, err)
 	}
 
-	if err := sym_data.doFillSymData(vmLinuxSymList, "sk_buff"); err != nil {
+    if err := sym_data.doFillSymData(vRouterSymList, "sk_buff"); err != nil {
+		log.Fatalf("Failed to fill symbols of %s: %s", vRouterSymList, err)
+	}
+
+    if err := sym_data.doFillSymData(vmLinuxSymList, "sk_buff"); err != nil {
 		log.Fatalf("Failed to fill symbols of %s: %s", vmLinuxSymList, err)
 	}
 }

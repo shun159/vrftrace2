@@ -49,5 +49,7 @@ func main() {
 
 	<-sigHandler()
 
+    vrft.TeardownSymbolData()
+
 	perfmap.Stop()
 }

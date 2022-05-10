@@ -99,7 +99,7 @@ struct vrft_event {
 	uint32_t nh_id;
 	// pad field for future use.
 	uint8_t _pad__[8];
-}; //__attribute__((aligned(8)));
+} __attribute__((aligned(8)));
 
 struct {
 	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);

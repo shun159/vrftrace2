@@ -33,7 +33,7 @@ int btf_find_pos(const char *st_name, const struct btf *btf,
 	const struct btf_type *func_proto, *t;
 	const struct btf_param *params;
 	const char *arg_st_name, *func_name;
-	FILE *fp = fopen(filename, "w");
+	FILE *fp = fopen(filename, "a");
 
 	for (uint32_t id = 0; (t = btf__type_by_id(btf, id)); id++) {
 		int pos = 0;
