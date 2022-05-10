@@ -17,6 +17,7 @@ import (
 	"unsafe"
 
 	bpf "github.com/aquasecurity/libbpfgo"
+	"github.com/shun159/vr/vr"
 )
 
 const ATTACH_RESULT_FMT = "\rAttaching program (total: %d, succeeded: %d, failed: %d)"
@@ -28,6 +29,8 @@ var targetStructs = []string{
 }
 var progNames = []string{}
 var progDb = make(map[string]*bpf.BPFProg)
+var ifaceDb = make(map[uint32]vr.VrInterfaceReq)
+var ifaceMap *bpf.BPFMap
 
 func CreateKprobeModule() string {
 	name := C.CString("")
@@ -132,6 +135,32 @@ func createPerfbuf(bpfmod *bpf.Module, sym_data *SymbolData) (*bpf.PerfBuffer, e
 	return p, nil
 }
 
+func createIfaceMap(bpfmod *bpf.Module) error {
+	m, err := bpfmod.GetMap("iface_map")
+	if err != nil {
+		return err
+	}
+
+	ifaces, err := DumpInterfaces()
+	if err != nil {
+		return err
+	}
+
+	for _, vif := range ifaces {
+		os_idx := uint32(vif.VifrOsIdx)
+		vif_idx := uint32(vif.VifrIdx)
+		ifaceDb[os_idx] = vif
+		err := m.Update(unsafe.Pointer(&os_idx), unsafe.Pointer(&vif_idx))
+		if err != nil {
+			return err
+		}
+	}
+
+	ifaceMap = m
+
+	return nil
+}
+
 func InitBPF(sym_data *SymbolData) (*bpf.PerfBuffer, error) {
 	initBPFProgs()
 
@@ -142,6 +171,10 @@ func InitBPF(sym_data *SymbolData) (*bpf.PerfBuffer, error) {
 	}
 
 	if err := bpfProgCreate(bpfmod); err != nil {
+		return nil, err
+	}
+
+	if err := createIfaceMap(bpfmod); err != nil {
 		return nil, err
 	}
 

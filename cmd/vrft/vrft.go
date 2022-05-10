@@ -20,7 +20,6 @@ func sigHandler() chan os.Signal {
 }
 
 func main() {
-	vrft.DumpInterfaces()
 	user, err := user.Current()
 	if err != nil {
 		log.Fatalf("Failed to get current user")
