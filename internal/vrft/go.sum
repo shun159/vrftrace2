@@ -64,6 +64,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/shun159/vr v0.0.0-20220430075319-d65bbaf9cd8d h1:9wyikxYFHxAGdKwja+4mWP8yvc9XUqVPpUTTFLnOJrs=
 github.com/shun159/vr v0.0.0-20220430075319-d65bbaf9cd8d/go.mod h1:BcjAFAvT8iJ37aVAVl3JWSw2snDKpUKE1csqxvw4xfw=
+github.com/shun159/vrftrace2 v0.0.0-20220512052325-477892091223 h1:cT26h7woE04eKyx5wDfB2XG6s97NgkXNJmo1xUVuE8k=
+github.com/shun159/vrftrace2 v0.0.0-20220512052325-477892091223/go.mod h1:jgsT3U2uPCra5JGY+DJYsB9k0oe95mFwc8OVr04D4qQ=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

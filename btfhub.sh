@@ -89,7 +89,6 @@ rsync -avz \
     ${BTFHUB_ARCH_DIR}/                 \
     --exclude=.git*                     \
     --exclude=README.md                 \
-    --exclude="centos/7*"               \
     --exclude="fedora/29/*/5.3*"        \
     --exclude="fedora/30/*/5.6*"        \
     --exclude="fedora/31*"              \

@@ -1,3 +1,6 @@
+.ONESHELL:
+SHELL = /bin/sh
+
 CMD_CLANG ?= clang
 CMD_MKDIR ?= mkdir
 CMD_GIT ?= git
@@ -17,6 +20,16 @@ LIB_HEADERS = /usr/include/
 LIBBPF_HEADERS = dist/libbpf
 LIBBPF_OBJ = dist/libbpf/libbpf.a
 LIBVRFT_OBJ = c_src/libvrft.a
+
+.check_%:
+#
+	@command -v $* >/dev/null
+	if [ $$? -ne 0 ]; then
+		echo "missing required tool $*"
+		exit 1
+	else
+		touch $@ # avoid target rebuilds due to inexistent file
+	fi
 
 $(OUTPUT_DIR):
 	@$(CMD_MKDIR) -p $@
@@ -62,14 +75,30 @@ BPF_CFLAGS := \
   -target bpf \
   -D__TARGET_ARCH_$(ARCH)
 
-.PHONY: xxd_bpf
-xxd_bpf: $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o btfhub c_src/vrftrace_kprobe.bpf.o.h c_src/vrouter.bpf.h
+#
+# btfhub (expensive: only run if core obj changed)
+#
 
 SH_BTFHUB = ./btfhub.sh
 
 .PHONY: btfhub
-btfhub:# $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o
-	$(SH_BTFHUB)
+btfhub: $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o \
+	| .check_$(CMD_MD5)
+	$(MAKE) $(OUTPUT_DIR)/btfhub
+	@new=$($(CMD_MD5) -b $< | cut -d' ' -f1)
+	@if [ -f ".$(notdir $<).md5" ]; then
+		old=$($(CMD_CAT) .$(notdir $<).md5)
+		if [ "$$old" != "$$new" ]; then
+			$(SH_BTFHUB) && echo $$new > .$(notdir $<).md5
+		fi
+	else
+		$(SH_BTFHUB) && echo $$new > .$(notdir $<).md5
+	fi
+
+.PHONY: xxd_bpf
+xxd_bpf: btfhub \
+	c_src/vrftrace_kprobe.bpf.o.h \
+	c_src/vrouter.bpf.h
 
 $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o: bpf/vrftrace_kprobe.bpf.c
 	$(CMD_CLANG) $(BPF_CFLAGS) -c $^ -o $@
@@ -147,6 +176,7 @@ test:
 clean:
 	$(CMD_RM) -f bin/vrft
 	$(CMD_RM) -rf dist/
+	$(CMD_RM) -f .vrftrace_kprobe.bpf.o.md5
 	$(CMD_RM) -f bpf/vrftrce
 	$(CMD_RM) -f $(OBJS) c_src/libvrft.a
 	$(CMD_RM) -f bpf/vrftrace_kprobe.bpf.o

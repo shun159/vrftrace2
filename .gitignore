@@ -4,3 +4,5 @@
 /c_src/libvrft.a
 btfhub/
 btfhub-archive/
+.check_md5sum
+.vrftrace_kprobe.bpf.o.md5

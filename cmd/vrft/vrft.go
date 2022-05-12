@@ -10,7 +10,7 @@ import (
 	"os/user"
 	"syscall"
 
-	"github.com/shun159/vrftrace2/vrft"
+	"internal/vrft"
 )
 
 func sigHandler() chan os.Signal {
@@ -20,6 +20,8 @@ func sigHandler() chan os.Signal {
 }
 
 func main() {
+    vrft.GetKernelinfo("/tmp/vrft.btf")
+
 	user, err := user.Current()
 	if err != nil {
 		log.Fatalf("Failed to get current user")

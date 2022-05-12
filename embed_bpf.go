@@ -3,7 +3,10 @@
 
 package vrft
 
-import "embed"
+import (
+	"embed"
+)
 
-//go:embed "./../dist/btfhub/*"
+//go:embed "dist/btfhub"
 var BPFBundleInjected embed.FS
+
