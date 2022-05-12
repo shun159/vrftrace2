@@ -54,8 +54,8 @@ int get_vrouter_btf_image(unsigned char **imagep, unsigned int *image_sizep)
 
 int get_kprobe_mod_image(unsigned char **imagep, unsigned int *image_sizep)
 {
-	*imagep = bpf_vrftrace_kprobe_bpf_o;
-	*image_sizep = bpf_vrftrace_kprobe_bpf_o_len;
+	*imagep = dist_vrftrace_kprobe_bpf_o;
+	*image_sizep = dist_vrftrace_kprobe_bpf_o_len;
 
 	return 0;
 }

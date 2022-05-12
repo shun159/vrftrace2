@@ -11,16 +11,16 @@
 # Note: You may opt out from fetching repositories changes in the beginning of
 # the execution by exporting SKIP_FETCH=1 env variable.
 
-BASEDIR=$(dirname "${0}") ; cd ${BASEDIR}/../ ; BASEDIR=$(pwd) ; cd ${BASEDIR}
+BASEDIR=$(pwd) ; cd ${BASEDIR}
 
 # variables
 
-TRACEE_BPF_CORE="${BASEDIR}/dist/tracee.bpf.core.o"
+TRACEE_BPF_CORE="${BASEDIR}/dist/vrftrace_kprobe.bpf.o"
 BTFHUB_REPO="https://github.com/aquasecurity/btfhub.git"
 BTFHUB_ARCH_REPO="https://github.com/aquasecurity/btfhub-archive.git"
-BTFHUB_DIR="${BASEDIR}/3rdparty/btfhub"
-BTFHUB_ARCH_DIR="${BASEDIR}/3rdparty/btfhub-archive"
-
+BTFHUB_DIR="${BASEDIR}/btfhub"
+BTFHUB_ARCH_DIR="${BASEDIR}/btfhub-archive"
+echo $TRACEE_BPF_CORE
 ARCH=$(uname -m)
 
 case ${ARCH} in

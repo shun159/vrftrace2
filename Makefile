@@ -5,6 +5,9 @@ CMD_XXD ?= xxd
 CMD_GO ?= go
 CMD_RM ?= rm
 CMD_PKGCONFIG ?= pkg-config
+CMD_MD5 ?= md5sum
+CMD_TOUCH ?= touch
+CMD_CAT ?= cat
 
 OUTPUT_DIR = ./dist
 BTF_DIR = bpf/btf
@@ -19,6 +22,11 @@ $(OUTPUT_DIR):
 	@$(CMD_MKDIR) -p $@
 	@$(CMD_MKDIR) -p $@/libbpf
 	@$(CMD_MKDIR) -p $@/libbpf/obj
+
+$(OUTPUT_DIR)/btfhub:
+#
+	@$(CMD_MKDIR) -p $@
+	@$(CMD_TOUCH) $@/.place-holder # needed for embed.FS
 
 .PHONY: all
 all: deps.get libbpf.a xxd_bpf libvrft.a bin/vrft
@@ -55,12 +63,18 @@ BPF_CFLAGS := \
   -D__TARGET_ARCH_$(ARCH)
 
 .PHONY: xxd_bpf
-xxd_bpf: bpf/vrftrace_kprobe.bpf.o c_src/vrftrace_kprobe.bpf.o.h c_src/vrouter.bpf.h
+xxd_bpf: $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o btfhub c_src/vrftrace_kprobe.bpf.o.h c_src/vrouter.bpf.h
 
-bpf/vrftrace_kprobe.bpf.o: bpf/vrftrace_kprobe.bpf.c
+SH_BTFHUB = ./btfhub.sh
+
+.PHONY: btfhub
+btfhub:# $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o
+	$(SH_BTFHUB)
+
+$(OUTPUT_DIR)/vrftrace_kprobe.bpf.o: bpf/vrftrace_kprobe.bpf.c
 	$(CMD_CLANG) $(BPF_CFLAGS) -c $^ -o $@
 
-c_src/vrftrace_kprobe.bpf.o.h: bpf/vrftrace_kprobe.bpf.o
+c_src/vrftrace_kprobe.bpf.o.h: $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o
 	$(CMD_XXD) -i $^ > $@
 
 c_src/vrouter.bpf.h:
