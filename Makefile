@@ -11,6 +11,7 @@ CMD_PKGCONFIG ?= pkg-config
 CMD_MD5 ?= md5sum
 CMD_TOUCH ?= touch
 CMD_CAT ?= cat
+CMD_INSTALL ?= install
 
 OUTPUT_DIR = ./dist
 BTF_DIR = bpf/btf
@@ -44,6 +45,15 @@ $(OUTPUT_DIR)/btfhub:
 .PHONY: all
 all: deps.get libbpf.a xxd_bpf libvrft.a bin/vrft
 
+## bundle
+.PHONY: $(OUTPUT_DIR)/vrftrace.bpf
+$(OUTPUT_DIR)/vrftrace.bpf: \
+	.check_$(CMD_INSTALL)
+#
+	@$(CMD_MKDIR) -p $@
+	$(CMD_INSTALL) -m 0640 $(OUTPUT_DIR)/libbpf/bpf/*.h $@
+	$(CMD_INSTALL) -m 0640 bpf/vrftrace_kprobe.bpf.c @
+
 ## libbpf
 LIBBPF_CFLAGS="-fPIC"
 LIBBPF_LDFLAGS=
@@ -73,6 +83,7 @@ BPF_CFLAGS := \
   -g \
   -O3 \
   -target bpf \
+  -I$(OUTPUT_DIR)/vrftrace.bpf \
   -D__TARGET_ARCH_$(ARCH)
 
 #
@@ -101,6 +112,7 @@ xxd_bpf: btfhub \
 	c_src/vrouter.bpf.h
 
 $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o: bpf/vrftrace_kprobe.bpf.c
+	$(MAKE) $(OUTPUT_DIR)/vrftrace.bpf
 	$(CMD_CLANG) $(BPF_CFLAGS) -c $^ -o $@
 
 c_src/vrftrace_kprobe.bpf.o.h: $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o
@@ -121,7 +133,8 @@ CFLAGS := \
   -g \
   -Wall \
   -Wextra \
-  -I ./bpf/
+  -I ./bpf/ \
+  -I$(OUTPUT_DIR)/vrftrace.bpf
 
 .PHONY: libvrft.a
 libvrft.a: c_src/libvrft.a

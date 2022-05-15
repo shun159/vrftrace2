@@ -4,5 +4,9 @@
 /c_src/libvrft.a
 btfhub/
 btfhub-archive/
-.check_md5sum
-.vrftrace_kprobe.bpf.o.md5
+# .check* files are needed so .PHONY dependencies in makefile
+# aren't built each time you try to make the target (only if
+# the target dependencies, like source files, changed)
+.check*
+# needed for the makefile btfhub building logic
+*.md5

@@ -14,9 +14,9 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fts.h>
-#include <bpf/bpf.h>
-#include <bpf/btf.h>
-#include <bpf/libbpf.h>
+#include <bpf.h>
+#include <btf.h>
+#include <libbpf.h>
 
 #define MAX_ARG_POS 5
 #define FUNC_LIST_FILE "/tmp/vrftrace_func_list.txt"
