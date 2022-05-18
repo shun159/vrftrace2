@@ -53,8 +53,15 @@ func initBPFProgs() {
 	}
 }
 
-func bpfModCreate(filename string) (*bpf.Module, error) {
-	if bpfmod, err := bpf.NewModuleFromFile(filename); err != nil {
+func bpfModCreate(filename string, kinfo *KernelInfo) (*bpf.Module, error) {
+    module_args := bpf.NewModuleArgs{
+        BTFObjPath: kinfo.BTFfilename,
+        BPFObjPath: filename,
+    }
+
+    log.Printf("%+v", module_args)
+
+	if bpfmod, err := bpf.NewModuleFromFileArgs(module_args); err != nil {
 		return nil, err
 	} else {
 		return bpfmod, nil
@@ -161,11 +168,11 @@ func createIfaceMap(bpfmod *bpf.Module) error {
 	return nil
 }
 
-func InitBPF(sym_data *SymbolData) (*bpf.PerfBuffer, error) {
+func InitBPF(sym_data *SymbolData, kinfo *KernelInfo) (*bpf.PerfBuffer, error) {
 	initBPFProgs()
 
 	mod_filename := CreateKprobeModule()
-	bpfmod, err := bpfModCreate(mod_filename)
+	bpfmod, err := bpfModCreate(mod_filename, kinfo)
 	if err != nil {
 		return nil, err
 	}

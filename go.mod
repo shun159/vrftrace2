@@ -7,6 +7,7 @@ require (
 	github.com/apache/thrift v0.16.0 // indirect
 	github.com/aquasecurity/libbpfgo v0.2.5-libbpf-0.7.0.0.20220503131840-80f44303d40f // indirect
 	github.com/google/go-cmp v0.5.6 // indirect
+	github.com/jessevdk/go-flags v1.5.0 // indirect
 	github.com/josharian/native v0.0.0-20200817173448-b6b71def0850 // indirect
 	github.com/mdlayher/genetlink v1.1.0 // indirect
 	github.com/mdlayher/netlink v1.5.0 // indirect

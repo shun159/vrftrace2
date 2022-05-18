@@ -66,12 +66,14 @@ func CreateVrouterSymList(name string) int {
 	return 0
 }
 
-func CreateVMLINUXSymList() int {
+func CreateVMLINUXSymList(vmlinux string) int {
 	st_name := C.CString("sk_buff")
 	filename := C.CString(vmLinuxSymList)
-	btf := C.btf__load_vmlinux_btf()
+	path := C.CString(vmlinux)
+	btf := C.btf__parse_raw(path)
 	defer C.free(unsafe.Pointer(st_name))
 	defer C.free(unsafe.Pointer(filename))
+	defer C.free(unsafe.Pointer(path))
 
 	ret := C.btf_find_pos(st_name, btf, filename)
 	if ret != 0 {
@@ -156,7 +158,7 @@ func (sym_data *SymbolData) doFillSymData(filename, name string) error {
 	return nil
 }
 
-func (sym_data *SymbolData) FillSymData() {
+func (sym_data *SymbolData) FillSymData(kinfo *KernelInfo) {
 	if err := sym_data.initAvailSymbols(); err != nil {
 		log.Fatalf("Failed to initilalize available_filter_functions")
 	}
@@ -166,7 +168,7 @@ func (sym_data *SymbolData) FillSymData() {
 		log.Fatalf("Failed to write symbol list with %s", ret)
 	}
 
-	if ret := CreateVMLINUXSymList(); ret != 0 {
+	if ret := CreateVMLINUXSymList(kinfo.BTFfilename); ret != 0 {
 		log.Fatalf("Failed to write symbol list with %s", ret)
 	}
 

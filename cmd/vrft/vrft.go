@@ -20,7 +20,12 @@ func sigHandler() chan os.Signal {
 }
 
 func main() {
-    vrft.GetKernelinfo("/tmp/vrft.btf")
+	opts := vrft.ParseOptions()
+
+	kinfo, err := vrft.GetKernelinfo(opts.Vmlinux)
+	if err != nil {
+		log.Fatalf("Failed get system info")
+	}
 
 	user, err := user.Current()
 	if err != nil {
@@ -40,9 +45,9 @@ func main() {
 		log.Fatalf("Failed to instantiate a symbol_database")
 	}
 
-	sym_data.FillSymData()
+	sym_data.FillSymData(kinfo)
 
-	perfmap, err := vrft.InitBPF(sym_data)
+	perfmap, err := vrft.InitBPF(sym_data, kinfo)
 	if err != nil {
 		log.Fatalf("Failed to initialize BPF progs or maps: %+v", err)
 	}
@@ -51,7 +56,7 @@ func main() {
 
 	<-sigHandler()
 
-    vrft.TeardownSymbolData()
+	vrft.TeardownSymbolData()
 
 	perfmap.Stop()
 }

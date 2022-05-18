@@ -1,17 +1,17 @@
 package vrft
 
 import (
-	"fmt"
-	"io"
+	"log"
 	"os"
 
-	embed "github.com/shun159/vrftrace2"
+	//embed "github.com/shun159/vrftrace2"
 	"github.com/zcalusic/sysinfo"
 )
 
 var (
-	VMLINUX    = "/sys/kernel/btf/vmlinux"
-	baseBTFDir = "dist/btfhub/%s/%s/%s/%s.btf"
+	VMLINUX       = "/sys/kernel/btf/vmlinux"
+	baseBTFDir    = "dist/btfhub/%s/%s/%s/%s.btf"
+	defaultBTFDir = "dist/vmlinux"
 )
 
 type KernelInfo struct {
@@ -23,7 +23,7 @@ type KernelInfo struct {
 	BTFfilename   string
 }
 
-func GetKernelinfo(btfOutFilePath string) (*KernelInfo, error) {
+func GetKernelinfo(btfFilePath string) (*KernelInfo, error) {
 	var si sysinfo.SysInfo
 	kinfo := KernelInfo{}
 
@@ -38,46 +38,26 @@ func GetKernelinfo(btfOutFilePath string) (*KernelInfo, error) {
 	kinfo.KernelRelease = kernelinfo.Release
 	kinfo.KernelArch = kernelinfo.Architecture
 
-	if err := kinfo.PickBTFFile(btfOutFilePath); err != nil {
+	if err := kinfo.PickBTFFile(btfFilePath); err != nil {
 		return nil, err
 	}
 
 	return &kinfo, nil
 }
 
-func (kinfo *KernelInfo) PickBTFFile(outFilePath string) error {
-	var btfFileName string
+func (kinfo *KernelInfo) PickBTFFile(bpfFilePath string) error {
+	kinfo.BTFfilename = bpfFilePath
 
-	btfFileName = fmt.Sprintf(
-		baseBTFDir,
-		kinfo.OSVendor,
-		kinfo.OSRelease,
-		kinfo.KernelArch,
-		kinfo.KernelRelease,
-	)
-
-	if _, err := os.Stat(VMLINUX); err == nil {
-		kinfo.BTFfilename = VMLINUX
-        return nil
+	if bpfFilePath == VMLINUX {
+		log.Printf("Load %s BTF file\n", VMLINUX)
+		return nil
 	}
 
-	btfFile, err := embed.BPFBundleInjected.Open(btfFileName)
-	if err != nil {
-		return fmt.Errorf("error opening embedded btfhub file: %s", err.Error())
+	if _, err := os.Stat(bpfFilePath); err != nil {
+		log.Printf("Couldn't found %s, load %s instead\n", bpfFilePath, defaultBTFDir)
+		kinfo.BTFfilename = defaultBTFDir
+		return nil
 	}
-	defer btfFile.Close()
-
-	outFile, err := os.Create(outFilePath)
-	if err != nil {
-		return fmt.Errorf("could not create btf file: %s", err.Error())
-	}
-	defer outFile.Close()
-
-	if _, err := io.Copy(outFile, btfFile); err != nil {
-		return fmt.Errorf("error copying embedded btfhub file: %s", err.Error())
-	}
-
-	kinfo.BTFfilename = outFilePath
 
 	return nil
 }
