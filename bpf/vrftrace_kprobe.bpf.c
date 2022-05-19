@@ -12,6 +12,13 @@
 
 /*
  * ============================================
+ *  tf-vrouter packet structure
+ * ============================================
+ */
+struct vr_packet;
+
+/*
+ * ============================================
  *  Linux netdev
  * ============================================
  */
@@ -27,37 +34,6 @@ struct sk_buff {
 	struct net_device *dev;
 	// ifindex of device we arrived on
 	int skb_iif;
-};
-
-/*
- * ============================================
- *  vrouter vr_packet
- * ============================================
- */
-
-// The Virtual Interface structure
-struct vr_interface {
-	// VRF index the interface belongs to.
-	uint16_t vif_vrf;
-	// interface index
-	uint32_t vif_os_idx;
-	uint16_t vif_type;
-	uint32_t vif_nh_id;
-};
-
-// The nexthop strcture. the structure is similar to ofp_action.
-struct vr_nexthop {
-	uint8_t nh_type;
-	// nexthop idx
-	uint32_t nh_id;
-};
-
-// The packet structure. the structure is similar to sk_buff.
-struct vr_packet {
-	// Device we arrived on/are leaving by
-	struct vr_interface *vp_if;
-	// The nexthop index which packets processed on.
-	struct vr_nexthop *vp_nh;
 };
 
 /*
@@ -81,23 +57,8 @@ struct vrft_event {
 	uint8_t pad1[3];
 	// Is this kretprobe?
 	uint8_t is_return;
-	// ifindex of device we arrived on
-	uint32_t iif;
-	// device ifindex
-	uint32_t dev_ifindex;
-	// align to 8
-	uint8_t pad2[7];
-	/*
-     * struct type
-     *   1 = sk_buff
-     *   2 = vr_packet
-     */
-	uint8_t struct_type;
-	// VRF idx
-	uint32_t vif_vrf;
-	// nexthop idx
-	uint32_t nh_id;
-	// pad field for future use.
+
+// pad field for future use.
 	uint8_t _pad__[8];
 } __attribute__((aligned(8)));
 
@@ -165,8 +126,6 @@ handle_sk_buff(struct pt_regs *ctx, uint8_t is_return, struct sk_buff *skb)
 	e.faddr = PT_REGS_IP((struct pt_regs *)ctx) - 1;
 	e.processor_id = bpf_get_smp_processor_id();
 	e.is_return = is_return;
-	e.iif = skb_iif;
-	e.dev_ifindex = dev_ifindex;
 	e.struct_type = SK_BUFF;
 
 	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &e, sizeof(e));
@@ -177,29 +136,14 @@ handle_sk_buff(struct pt_regs *ctx, uint8_t is_return, struct sk_buff *skb)
 static __always_inline int
 handle_vr_packet(struct pt_regs *ctx, uint8_t is_return, struct vr_packet *pkt)
 {
-	uint32_t vif_vrf;
-	uint16_t vif_type;
-	uint32_t dev_ifindex;
-	uint32_t nh_id;
-	uint8_t nh_type;
 	struct vrft_event e = { 0 };
-
-	dev_ifindex = BPF_CORE_READ(pkt, vp_if, vif_os_idx);
-	vif_vrf = (uint32_t)BPF_CORE_READ(pkt, vp_if, vif_vrf);
-	vif_type = BPF_CORE_READ(pkt, vp_if, vif_type);
-
-	nh_id = BPF_CORE_READ(pkt, vp_if, vif_nh_id);
-	nh_type = BPF_CORE_READ(pkt, vp_nh, nh_type);
 
 	e.packet_id = (uint64_t)pkt;
 	e.tstamp = bpf_ktime_get_ns();
 	e.faddr = PT_REGS_IP((struct pt_regs *)ctx) - 1;
 	e.processor_id = bpf_get_smp_processor_id();
 	e.is_return = is_return;
-	e.dev_ifindex = dev_ifindex;
 	e.struct_type = VR_PACKET;
-	e.vif_vrf = vif_vrf;
-	e.nh_id = nh_id;
 
 	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &e, sizeof(e));
 
