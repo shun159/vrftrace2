@@ -18,6 +18,7 @@ import (
 
 	bpf "github.com/aquasecurity/libbpfgo"
 	"github.com/shun159/vr/vr"
+	embed "github.com/shun159/vrftrace2"
 )
 
 const ATTACH_RESULT_FMT = "\rAttaching program (total: %d, succeeded: %d, failed: %d)"
@@ -31,18 +32,8 @@ var progNames = []string{}
 var progDb = make(map[string]*bpf.BPFProg)
 var ifaceDb = make(map[uint32]vr.VrInterfaceReq)
 var ifaceMap *bpf.BPFMap
-
-func CreateKprobeModule() string {
-	name := C.CString("")
-	ret := C.deploy_kprobe_module(&name)
-	defer C.free(unsafe.Pointer(name))
-
-	if ret != 0 {
-		log.Fatalf("Failed to create kprobe module")
-	}
-
-	return C.GoString(name)
-}
+var VrouterBTF = "/tmp/vrouter.btf"
+var KprobeMod = "/tmp/vrftrace_kprobe.bpf.o"
 
 func initBPFProgs() {
 	for _, st := range targetStructs {
@@ -54,12 +45,12 @@ func initBPFProgs() {
 }
 
 func bpfModCreate(filename string, kinfo *KernelInfo) (*bpf.Module, error) {
-    module_args := bpf.NewModuleArgs{
-        BTFObjPath: kinfo.BTFfilename,
-        BPFObjPath: filename,
-    }
+	module_args := bpf.NewModuleArgs{
+		BTFObjPath: kinfo.BTFfilename,
+		BPFObjPath: filename,
+	}
 
-    log.Printf("%+v", module_args)
+	log.Printf("%+v", module_args)
 
 	if bpfmod, err := bpf.NewModuleFromFileArgs(module_args); err != nil {
 		return nil, err
@@ -171,8 +162,15 @@ func createIfaceMap(bpfmod *bpf.Module) error {
 func InitBPF(sym_data *SymbolData, kinfo *KernelInfo) (*bpf.PerfBuffer, error) {
 	initBPFProgs()
 
-	mod_filename := CreateKprobeModule()
-	bpfmod, err := bpfModCreate(mod_filename, kinfo)
+	if err := embed.DeployVrouterBTF(); err != nil {
+		return nil, err
+	}
+
+	if err := embed.DeployKprobeMod(); err != nil {
+		return nil, err
+	}
+
+	bpfmod, err := bpfModCreate(KprobeMod, kinfo)
 	if err != nil {
 		return nil, err
 	}

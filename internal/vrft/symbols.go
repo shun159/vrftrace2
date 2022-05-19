@@ -15,10 +15,12 @@ import (
 	"unsafe"
 
 	bpf_helpers "github.com/aquasecurity/libbpfgo/helpers"
+	embed "github.com/shun159/vrftrace2"
 )
 
 const vRouterSymList = "/tmp/vrftrace_pkt_func_list.txt"
 const vmLinuxSymList = "/tmp/vrftrace_skb_func_list.txt"
+const vrouterBtf = "/tmp/vrouter.btf"
 
 type SymbolData struct {
 	SymTable     *bpf_helpers.KernelSymbolTable
@@ -33,18 +35,6 @@ func TeardownSymbolData() {
 			log.Printf("Failed to delete filename: %s error:%s\n", filename, err)
 		}
 	}
-}
-
-func CreateVrouterBTF() string {
-	name := C.CString("")
-	ret := C.deploy_vrouter_btf(&name)
-	defer C.free(unsafe.Pointer(name))
-
-	if ret != 0 {
-		log.Fatalf("Failed to create BTF file")
-	}
-
-	return C.GoString(name)
 }
 
 func CreateVrouterSymList(name string) int {
@@ -163,8 +153,11 @@ func (sym_data *SymbolData) FillSymData(kinfo *KernelInfo) {
 		log.Fatalf("Failed to initilalize available_filter_functions")
 	}
 
-	path := CreateVrouterBTF()
-	if ret := CreateVrouterSymList(path); ret != 0 {
+	if err := embed.DeployVrouterBTF(); err != nil {
+		log.Fatalf("Failed tp deploy vrouter.btf", err)
+	}
+
+	if ret := CreateVrouterSymList(vrouterBtf); ret != 0 {
 		log.Fatalf("Failed to write symbol list with %s", ret)
 	}
 

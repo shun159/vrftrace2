@@ -6,12 +6,12 @@ import (
 )
 
 type PerfEvent struct {
-	PacketId      uint64
-	Tstamp        uint64
-	Faddr         uint64
-	Fname         string
-	ProcessorId   uint32
-	IsReturn      uint8
+	PacketId    uint64
+	Tstamp      uint64
+	Faddr       uint64
+	Fname       string
+	ProcessorId uint32
+	IsReturn    uint8
 }
 
 func handleEvent(event chan []byte, sym_data *SymbolData) {
