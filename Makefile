@@ -1,6 +1,7 @@
 .ONESHELL:
 SHELL = /bin/sh
 
+CMD_CP ?= cp
 CMD_CLANG ?= clang
 CMD_MKDIR ?= mkdir
 CMD_GIT ?= git
@@ -44,6 +45,20 @@ $(OUTPUT_DIR)/btfhub:
 
 .PHONY: all
 all: deps.get libbpf.a xxd_bpf libvrft.a bin/vrft
+
+## vmlinux tf-vrouter supported
+.PHONY: $(OUTPUT_DIR)/vmlinux
+$(OUTPUT_DIR)/vmlinux:
+	if [[ ! -z "${KERNEL_RELEASE}" ]];	then
+		@tar xf "$(wildcard btfhub-archive/*/*/x86_64/$(KERNEL_RELEASE).btf.tar.xz)" -C $(OUTPUT_DIR)
+		$(CMD_CP) $(OUTPUT_DIR)/${KERNEL_RELEASE}.btf $@
+		$(CMD_RM) -f "$(OUTPUT_DIR)/$(KERNEL_RELEASE).btf"    
+	fi
+
+## tf-vrouter BTF
+.PHONY: $(OUTPUT_DIR)/vrouter.btf
+$(OUTPUT_DIR)/vrouter.btf:
+	$(CMD_CP) bpf/btf/vrouter_r2011L4.btf $@
 
 ## bundle
 .PHONY: $(OUTPUT_DIR)/vrftrace.bpf
@@ -108,6 +123,8 @@ btfhub: $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o \
 
 .PHONY: xxd_bpf
 xxd_bpf: btfhub \
+	$(OUTPUT_DIR)/vrouter.btf \
+	$(OUTPUT_DIR)/vmlinux \
 	c_src/vrftrace_kprobe.bpf.o.h \
 	c_src/vrouter.bpf.h
 

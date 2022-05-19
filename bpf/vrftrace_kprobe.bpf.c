@@ -126,7 +126,6 @@ handle_sk_buff(struct pt_regs *ctx, uint8_t is_return, struct sk_buff *skb)
 	e.faddr = PT_REGS_IP((struct pt_regs *)ctx) - 1;
 	e.processor_id = bpf_get_smp_processor_id();
 	e.is_return = is_return;
-	e.struct_type = SK_BUFF;
 
 	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &e, sizeof(e));
 
@@ -143,7 +142,6 @@ handle_vr_packet(struct pt_regs *ctx, uint8_t is_return, struct vr_packet *pkt)
 	e.faddr = PT_REGS_IP((struct pt_regs *)ctx) - 1;
 	e.processor_id = bpf_get_smp_processor_id();
 	e.is_return = is_return;
-	e.struct_type = VR_PACKET;
 
 	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &e, sizeof(e));
 
