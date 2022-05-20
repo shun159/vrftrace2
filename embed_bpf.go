@@ -9,6 +9,7 @@ import (
 	"os"
 )
 
+//go:embed "dist/vmlinux"
 //go:embed "dist/vrouter.btf"
 //go:embed "dist/vrftrace_kprobe.bpf.o"
 var BPFBundleInjected embed.FS
@@ -44,4 +45,8 @@ func DeployVrouterBTF() error {
 
 func DeployKprobeMod() error {
 	return deployEmbedFile("dist/vrftrace_kprobe.bpf.o", "/tmp/vrftrace_kprobe.bpf.o")
+}
+
+func DeployVmlinux() error {
+	return deployEmbedFile("dist/vmlinux", "/tmp/vmlinux")
 }

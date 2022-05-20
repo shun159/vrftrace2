@@ -153,8 +153,12 @@ func (sym_data *SymbolData) FillSymData(kinfo *KernelInfo) {
 		log.Fatalf("Failed to initilalize available_filter_functions")
 	}
 
+    if err := embed.DeployVmlinux(); err != nil {
+		log.Fatalf("Failed to deploy vmlinux", err)
+	}
+
 	if err := embed.DeployVrouterBTF(); err != nil {
-		log.Fatalf("Failed tp deploy vrouter.btf", err)
+		log.Fatalf("Failed to deploy vrouter.btf", err)
 	}
 
 	if ret := CreateVrouterSymList(vrouterBtf); ret != 0 {

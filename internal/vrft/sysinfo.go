@@ -11,7 +11,7 @@ import (
 var (
 	VMLINUX       = "/sys/kernel/btf/vmlinux"
 	baseBTFDir    = "dist/btfhub/%s/%s/%s/%s.btf"
-	defaultBTFDir = "dist/vmlinux"
+	defaultBTFDir = "/tmp/vmlinux"
 )
 
 type KernelInfo struct {

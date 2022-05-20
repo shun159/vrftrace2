@@ -162,10 +162,6 @@ func createIfaceMap(bpfmod *bpf.Module) error {
 func InitBPF(sym_data *SymbolData, kinfo *KernelInfo) (*bpf.PerfBuffer, error) {
 	initBPFProgs()
 
-	if err := embed.DeployVrouterBTF(); err != nil {
-		return nil, err
-	}
-
 	if err := embed.DeployKprobeMod(); err != nil {
 		return nil, err
 	}

@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"os/user"
 	"syscall"
 
 	"internal/vrft"
@@ -27,12 +26,8 @@ func main() {
 		log.Fatalf("Failed get system info")
 	}
 
-	user, err := user.Current()
-	if err != nil {
-		log.Fatalf("Failed to get current user")
-	}
-
-	if user.Uid != "0" {
+	uid := os.Getuid()
+	if uid != 0 {
 		log.Fatalf("must be root to use eBPF")
 	}
 
