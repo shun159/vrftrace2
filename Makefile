@@ -1,6 +1,8 @@
 # Copyright 2022 shun159 <dreamdiagnosis@gmail.com>. All rights reserved.
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
+.PHONY: all
+all: libbpf ebpf_probes vrft-ebpf
 
 .ONESHELL:
 SHELL = /bin/bash
@@ -10,6 +12,7 @@ CMD_MAKE    ?= make
 CMD_PKGCONF	?= pkg-config
 CMD_GO		?= go
 CMD_CP      ?= cp
+CMD_RM		?= rm
 
 OUTPUT_DIR = ./dist
 BPF_PROG_DIR = ./internal/ebpf/c
@@ -33,7 +36,6 @@ LIB_ZLIB ?= zlib
 $(OUTPUT_DIR):
 	@mkdir -p $@
 	@mkdir -p $@/libbpf/obj
-	@mkdir -p $@/btfhub/
 # needed for embed.FS
 	@mkdir -p $@/.place-holder 
 
@@ -71,6 +73,9 @@ BPF_CFLAGS := \
   -I$(OUTPUT_DIR)/vrftrace.bpf \
   -D__TARGET_ARCH_$(ARCH)
 
+.PHONY: ebpf_probes
+ebpf_probes: $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o
+
 $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o: $(BPF_PROG_DIR)/vrftrace_kprobe.bpf.c
 	$(CMD_CLANG) $(BPF_CFLAGS) -c $^ -o $@
 
@@ -106,6 +111,8 @@ GO_TAGS_EBPF = core,ebpf
 GO_FILES:=$(shell find . -type f -name '*.go' -print)
 GO_UTEST_FILES:=$(shell find . -type f -name '*_test.go' -print)
 
+.PHONY: vrft-ebpf
+vrft-ebpf: bin/vrft
 bin/vrft: $(GO_FILES)
 	$(GO_ENV_EBPF) $(CMD_GO) build \
 		-tags $(GO_TAGS_EBPF) \
@@ -116,5 +123,7 @@ bin/vrft: $(GO_FILES)
 test-unit:
 	$(GO_ENV_EBPF) $(CMD_GO) test $(GO_UTEST_FILES) -v -tags $(GO_TAGS_EBPF)
 
+.PHONY: clean
 clean:
-	@rm -rf $(OUTPUT_DIR)
+	$(CMD_RM) -rf bin/
+	$(CMD_RM) -rf $(OUTPUT_DIR)
