@@ -1,0 +1,5 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/shun159/play/openflow/vrftrace2'
+make: 'dist' is up to date.
+make: Leaving directory '/home/shun159/play/openflow/vrftrace2'
+ 

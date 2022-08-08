@@ -1,0 +1,1 @@
+{"buildTargets":["bin/vrft","clean","dist","dist/libbpf/libbpf.a","dist/vrftrace_kprobe.bpf.o","dist/vrouter.btf","libbpf","test-unit"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

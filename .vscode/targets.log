@@ -1,0 +1,708 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
+# GNU Make 4.3
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Mon Aug  8 18:06:50 2022
+
+# Variables
+
+# environment
+GDK_BACKEND = wayland
+# environment
+LC_ALL = C
+# environment
+NO_AT_BRIDGE = 1
+# makefile (from 'Makefile', line 14)
+OUTPUT_DIR = ./dist
+# makefile (from 'Makefile', line 12)
+CMD_CP = cp
+# environment
+I3SOCK = /run/user/1000/sway-ipc.1000.1942.sock
+# makefile (from 'Makefile', line 11)
+CMD_GO = go
+# environment
+VSCODE_CWD = /home/shun159
+# environment
+SWAYSOCK = /run/user/1000/sway-ipc.1000.1942.sock
+# environment
+GDM_LANG = ja_JP.UTF-8
+# default
+MAKE_COMMAND := make
+# makefile (from 'Makefile', line 17)
+LIBBPF_HEADERS = $(OUTPUT_DIR)/libbpf
+# environment
+GOPATH = /home/shun159/go
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# makefile (from 'Makefile', line 84)
+CUSTOM_CGO_CFLAGS = " -I$(abspath $(OUTPUT_DIR)/libbpf) -I$(abspath bpf/) "
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# environment
+PWD = /home/shun159/play/openflow/vrftrace2
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# makefile (from 'Makefile', line 43)
+LIBBPF_LDFLAGS = 
+# environment
+MAIL = /var/spool/mail/shun159
+# makefile (from 'Makefile', line 105)
+GO_TAGS_EBPF = core,ebpf
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_CODE_CACHE_PATH = /home/shun159/.config/Code/CachedData/3b889b090b5ad5793f524b5d1d39fda662b96a2a
+# environment
+XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session0
+# environment
+LANG = C
+# default
+.LOADED := 
+# default
+.INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
+# makefile
+MAKEFLAGS = pqrR
+# makefile (from 'Makefile', line 29)
+LIB_ZLIB = zlib
+# makefile
+CURDIR := /home/shun159/play/openflow/vrftrace2
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+MFLAGS = -pqrR
+# default
+.SHELLFLAGS := -c
+# environment
+WAYLAND_DISPLAY = wayland-1
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# environment
+XDG_SESSION_DESKTOP = sway
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST := Makefile
+# automatic
+@F = $(notdir $@)
+# makefile (from 'Makefile', line 89)
+CUSTOM_CGO_LDFLAGS = " $(shell $(call pkg_config, $(LIB_ELF))) $(shell $(call pkg_config, $(LIB_ZLIB))) $(abspath $(OUTPUT_DIR)/libbpf/libbpf.a) "
+# environment
+VSCODE_PID = 321450
+# environment
+MOZ_ENABLE_WAYLAND = 1
+# environment
+XDG_SESSION_TYPE = wayland
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# environment
+CLUTTER_BACKEND = wayland
+# environment
+INPUT_METHOD = fcitx
+# automatic
+*F = $(notdir $*)
+# environment
+XDG_CURRENT_SESSION = sway
+# makefile (from 'Makefile', line 8)
+CMD_CLANG = clang
+# environment
+QT_QPA_PLATFORMTHEME = qt5ct
+# makefile (from 'Makefile', line 107)
+GO_UTEST_FILES := ./internal/ebpf/test/vrouter_test.go ./internal/ebpf/test/btf_test.go ./internal/ebpf/test/symbols_test.go
+# environment
+CHROME_DESKTOP = code-url-handler.desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# environment
+VSCODE_NLS_CONFIG = {"locale":"ja","availableLanguages":{},"_languagePackSupport":true}
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# makefile (from 'Makefile', line 6)
+SHELL = /bin/bash
+# default
+MAKECMDGOALS := all
+# environment
+XMODIFIERS = @im=fcitx
+# environment
+QT_QPA_PLATFORM = wayland
+# environment
+SDL_VIDEODRIVER = wayland
+# environment
+SHLVL = 1
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+IMSETTINGS_MODULE = fcitx
+# environment
+PATH = /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+# makefile (from 'Makefile', line 15)
+BPF_PROG_DIR = ./internal/ebpf/c
+# default
+MAKEFILES := 
+# environment
+MOTD_SHOWN = pam
+# automatic
+^F = $(notdir $^)
+# makefile (from 'Makefile', line 67)
+BPF_CFLAGS := -g -O3 -target bpf -I./dist/vrftrace.bpf -D__TARGET_ARCH_x86
+# makefile (from 'Makefile', line 9)
+CMD_MAKE = make
+# makefile (from 'Makefile', line 103)
+GO_ENV_EBPF = GOOS=linux CC=$(CMD_CLANG) GOARCH=$(GO_ARCH) CGO_CFLAGS=$(CUSTOM_CGO_CFLAGS) CGO_LDFLAGS=$(CUSTOM_CGO_LDFLAGS)
+# automatic
+?F = $(notdir $?)
+# environment
+XDG_SEAT = seat0
+# environment
+GTK_IM_MODULE = fcitx
+# environment
+XDG_CURRENT_DESKTOP = sway
+# automatic
++F = $(notdir $+)
+# environment
+XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
+# environment
+DESKTOP_SESSION = sway
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = sway
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+LOGNAME = shun159
+# makefile (from 'Makefile', line 44)
+LIBBPF_SRC = ./libbpf/src/
+# environment
+XDG_VTNR = 8
+# makefile
+.DEFAULT_GOAL := dist
+# makefile (from 'Makefile', line 66)
+ARCH := x86
+# makefile (from 'Makefile', line 42)
+LIBBPF_CFLAGS = "-fPIC"
+# environment
+DISPLAY = :0
+# environment
+GTK_MODULES = canberra-gtk-module
+# environment
+USER = shun159
+# default
+MAKE_VERSION := 4.3
+# 'override' directive
+.SHELLSTATUS := 0
+# environment
+GLFW_IM_MODULE = fcitx
+# environment
+_ = /usr/bin/make
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# makefile (from 'Makefile', line 10)
+CMD_PKGCONF = pkg-config
+# environment
+GOMODCACHE = /home/shun159/go/pkg/mod
+# environment
+XDG_SESSION_CLASS = user
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /home/shun159
+# environment
+QT_IM_MODULE = fcitx
+# makefile (from 'Makefile', line 22)
+pkg_config = 	$(CMD_PKGCONF) --libs $(1)
+# environment
+MOZ_WEBRENDER = 1
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+VSCODE_IPC_HOOK = /run/user/1000/vscode-857134aa-1.69.2-main.sock
+# makefile (from 'Makefile', line 18)
+LIBBPF_OBJECT = $(OUTPUT_DIR)/libbpf/libbpf.a
+# environment
+XDG_SESSION_ID = 2
+# makefile (from 'Makefile', line 96)
+CGO_EXT_LDFLAGS_EBPF = -static
+# environment
+XCURSOR_SIZE = 24
+# environment
+GOPROXY = https://proxy.golang.org,direct
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# environment
+LIBSEAT_BACKEND = logind
+# makefile (from 'Makefile', line 28)
+LIB_ELF = libelf
+# default
+SUFFIXES := 
+# environment
+VSCODE_CLI = 1
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+WINIT_UNIX_BACKEND = x11
+# environment
+XDG_GREETER_DATA_DIR = /var/lib/lightdm-data/shun159
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink guile load
+# makefile (from 'Makefile', line 106)
+GO_FILES := ./embed_bpf.go ./internal/ebpf/symbols.go ./internal/ebpf/output.go ./internal/ebpf/kprobe.go ./internal/ebpf/vrouter.go ./internal/ebpf/btf.go ./internal/ebpf/unix.go ./internal/ebpf/test/vrouter_test.go ./internal/ebpf/test/btf_test.go ./internal/ebpf/test/symbols_test.go ./cmd/vrft/main.go
+# environment
+GDMSESSION = sway
+# variable set hash-table stats:
+# Load=125/1024=12%, Rehash=0, Collisions=7/198=4%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# ./libbpf/src/ (device 66306, inode 528): 43 files, no impossibilities.
+# . (device 66306, inode 257): 15 files, no impossibilities.
+
+# 58 files, no impossibilities in 2 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+# Not a target:
+libbpf/src//relo_core.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//btf.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+dist:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 34):
+	@mkdir -p $@
+	@mkdir -p $@/libbpf/obj
+	@mkdir -p $@/btfhub/
+	@mkdir -p $@/.place-holder 
+
+# Not a target:
+libbpf/src//skel_internal.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf_prog_linfo.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+.ONESHELL:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//str_error.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf_tracing.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+dist/vrouter.btf: internal/ebpf/c/vrouter.btf
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 80):
+	$(CMD_CP) -p $^ $@
+
+# Not a target:
+libbpf/src//hashmap.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//btf_dump.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//libbpf_probes.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf_helpers.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf_gen_internal.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//libbpf_version.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-08 14:34:23.687022063
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+libbpf/src//strset.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+embed_bpf.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/c/vrouter.btf:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+bin/vrft: embed_bpf.go internal/ebpf/symbols.go internal/ebpf/output.go internal/ebpf/kprobe.go internal/ebpf/vrouter.go internal/ebpf/btf.go internal/ebpf/unix.go internal/ebpf/test/vrouter_test.go internal/ebpf/test/btf_test.go internal/ebpf/test/symbols_test.go cmd/vrft/main.go
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 110):
+	$(GO_ENV_EBPF) $(CMD_GO) build \
+		-tags $(GO_TAGS_EBPF) \
+		-ldflags="-w -extldflags \"$(CGO_EXT_LDFLAGS_EBPF)\" -linkmode external"\
+		-v -o $@ ./cmd/vrft
+
+# Not a target:
+libbpf/src//nlattr.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//nlattr.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+clean:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 120):
+	@rm -rf $(OUTPUT_DIR)
+
+# Not a target:
+internal/ebpf/output.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/unix.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//gen_loader.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//libbpf_common.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//usdt.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//libbpf.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/test/symbols_test.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//ringbuf.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+test-unit:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 117):
+	$(GO_ENV_EBPF) $(CMD_GO) test $(GO_UTEST_FILES) -v -tags $(GO_TAGS_EBPF)
+
+# Not a target:
+libbpf/src//usdt.bpf.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/test/btf_test.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//libbpf_internal.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf_core_read.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src/:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/vrouter.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+all:
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/symbols.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//libbpf_legacy.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//linker.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/test/vrouter_test.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//netlink.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//relo_core.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//hashmap.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/c/vrftrace_kprobe.bpf.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//libbpf.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+libbpf: dist/libbpf/libbpf.a
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf_helper_defs.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//strset.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//bpf_endian.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//libbpf_errno.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//btf.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+cmd/vrft/main.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+libbpf/src//str_error.h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+dist/libbpf/libbpf.a: libbpf/src/ libbpf/src//bpf.c libbpf/src//bpf.h libbpf/src//bpf_core_read.h libbpf/src//bpf_endian.h libbpf/src//bpf_gen_internal.h libbpf/src//bpf_helper_defs.h libbpf/src//bpf_helpers.h libbpf/src//bpf_prog_linfo.c libbpf/src//bpf_tracing.h libbpf/src//btf.c libbpf/src//btf.h libbpf/src//btf_dump.c libbpf/src//gen_loader.c libbpf/src//hashmap.c libbpf/src//hashmap.h libbpf/src//libbpf.c libbpf/src//libbpf.h libbpf/src//libbpf_common.h libbpf/src//libbpf_errno.c libbpf/src//libbpf_internal.h libbpf/src//libbpf_legacy.h libbpf/src//libbpf_probes.c libbpf/src//libbpf_version.h libbpf/src//linker.c libbpf/src//netlink.c libbpf/src//nlattr.c libbpf/src//nlattr.h libbpf/src//relo_core.c libbpf/src//relo_core.h libbpf/src//ringbuf.c libbpf/src//skel_internal.h libbpf/src//str_error.c libbpf/src//str_error.h libbpf/src//strset.c libbpf/src//strset.h libbpf/src//usdt.bpf.h libbpf/src//usdt.c
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 53):
+	CC="$(CMD_CLANG)"								\
+	CFLAGS="$(LIBBPF_CFLAGS)"						\
+	LD_FLAGS="$(LIBBPF_LDFLAGS)"					\
+	$(CMD_MAKE)										\
+	-C $(LIBBPF_SRC) 								\
+	BUILD_STATIC_ONLY=1								\
+	DESTDIR=$(abspath $(OUTPUT_DIR)/libbpf/)		\
+	OBJDIR=$(abspath $(OUTPUT_DIR)/libbpf/obj)		\
+	INCLUDEDIR= LIBDIR= UAPIDIR= prefix= libdir=	\
+	install install_uapi_headers
+
+.PHONY: libbpf test-unit
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+internal/ebpf/kprobe.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+dist/vrftrace_kprobe.bpf.o: internal/ebpf/c/vrftrace_kprobe.bpf.c
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 75):
+	$(CMD_CLANG) $(BPF_CFLAGS) -c $^ -o $@
+
+# Not a target:
+internal/ebpf/btf.go:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# files hash-table stats:
+# Load=65/1024=6%, Rehash=0, Collisions=4/133=3%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 119 / storage = 1987 B / avg = 16 B
+# current buf: size = 8162 B / used = 1987 B / count = 119 / avg = 16 B
+
+# strcache performance: lookups = 144 / hit rate = 17%
+# hash-table stats:
+# Load=119/8192=1%, Rehash=0, Collisions=0/144=0%
+# Finished Make data base on Mon Aug  8 18:06:50 2022
+
+ 
