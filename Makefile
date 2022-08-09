@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 .PHONY: all
-all: libbpf ebpf_probes vrft-ebpf
+all: libbpf ebpf_probes vrouter.btf vrft-ebpf
 
 .ONESHELL:
 SHELL = /bin/bash
@@ -81,6 +81,8 @@ $(OUTPUT_DIR)/vrftrace_kprobe.bpf.o: $(BPF_PROG_DIR)/vrftrace_kprobe.bpf.c
 
 # ================== tf-vrouter BTF info ==================
 
+.PHONY: vrouter.btf
+vrouter.btf: $(OUTPUT_DIR)/vrouter.btf
 $(OUTPUT_DIR)/vrouter.btf: $(BPF_PROG_DIR)/vrouter.btf
 	$(CMD_CP) -p $^ $@
 

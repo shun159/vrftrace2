@@ -188,19 +188,7 @@ func (spec *VrfraceKprobeSpec) initPerfMap() (*bpf.PerfBuffer, error) {
 
 }
 
-func InitKprobe(btf_file string) (*bpf.PerfBuffer, error) {
-	args := SymbolDbArgs{
-		Btf: map[string][]string{
-			"vr_packet": {
-				"/tmp/vrouter.btf",
-			},
-			"sk_buff": {
-				"/sys/kernel/btf/vmlinux",
-				"/tmp/vrouter.btf",
-			},
-		},
-	}
-
+func InitKprobe(btf_file string, args SymbolDbArgs) (*bpf.PerfBuffer, error) {
 	symdb, err := InitSymbolDb(&args)
 	if err != nil {
 		return nil, err
