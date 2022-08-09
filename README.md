@@ -21,7 +21,23 @@ $ make bin/vrft
 ## Basic usage
 
 ```shellsession
-$ doas bin/vrft
+NAME:
+   vrftrace - A new cli application
+
+USAGE:
+   vrft [global options] command [command options] [arguments...]
+
+VERSION:
+   0.0.1
+
+COMMANDS:
+   help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --kernel-btf value   Linux kernel BTF file (default: "/sys/kernel/btf/vmlinux")
+   --vrouter-btf value  tf-vrouter.ko BTF file (default: "/tmp/vrouter.btf")
+   --help, -h           show help
+   --version, -v        print the version
 ```
 
 ## Sample output
