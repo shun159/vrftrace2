@@ -125,6 +125,10 @@ bin/vrft: $(GO_FILES)
 test-unit:
 	$(GO_ENV_EBPF) $(CMD_GO) test $(GO_UTEST_FILES) -v -tags $(GO_TAGS_EBPF)
 
+.PHONY: format
+format:
+	clang-format -i $(shell find internal -type f -name '*.[c|h]' -print)
+
 .PHONY: clean
 clean:
 	$(CMD_RM) -rf bin/
