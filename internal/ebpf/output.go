@@ -4,12 +4,33 @@
 
 package ebpf
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
+
+type printFgraphState struct {
+	indent int
+}
 
 func printKprobeHeader() {
 	fmt.Printf("%-20s %3.3s %32.32s\n", "Timestamp", "CPU", "Function")
 }
 
-func printKprobeEvent(event KprobePerfEvent) {
-	fmt.Printf("%-20d %3.3d %32.32s\n", event.Tstamp, event.ProcessorId, event.Fname)
+func (p *printFgraphState) printKprobeEvent(event KprobePerfEvent) {
+	if !event.IsReturn {
+		s := fmt.Sprintf("%-*s%s() {", p.indent*2, "", event.Fname)
+		fmt.Printf("%-20d %03d %-64.64s\n", event.Tstamp, event.ProcessorId, s)
+
+		if p.indent != math.MaxUint32 {
+			p.indent += 1
+		}
+	} else {
+		if p.indent != 0 {
+			p.indent -= 1
+		}
+
+		s := fmt.Sprintf("%-*s}", p.indent*2, "")
+		fmt.Printf("%-20d %03d %-64.64s\n", event.Tstamp, event.ProcessorId, s)
+	}
 }

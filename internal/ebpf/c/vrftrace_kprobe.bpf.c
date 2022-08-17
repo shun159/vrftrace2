@@ -5,18 +5,19 @@
 
 #include "vrftrace.bpf.h"
 
-static __inline uint64_t
-get_func_ip(void *ctx)
-{
-  return PT_REGS_IP((struct pt_regs *)ctx) - 1;
-}
-
 #define KPROBE_NUM(ST_NAME, HANDLER_FUNC, NUM)                                 \
   SEC("kprobe/##ST_NAME##NUM")                                                 \
-  int ST_NAME##NUM(struct pt_regs *ctx)                                        \
+  int kprobe_##ST_NAME##NUM(struct pt_regs *ctx)                               \
   {                                                                            \
     struct ST_NAME *req = (struct ST_NAME *)PT_REGS_PARM##NUM(ctx);            \
     return HANDLER_FUNC(ctx, 0, req);                                          \
+  }                                                                            \
+                                                                               \
+  SEC("kretprobe/##ST_NAME##NUM")                                              \
+  int kretprobe_##ST_NAME##NUM(struct pt_regs *ctx)                            \
+  {                                                                            \
+    struct ST_NAME *req = (struct ST_NAME *)PT_REGS_PARM##NUM(ctx);            \
+    return HANDLER_FUNC(ctx, 1, req);                                          \
   }
 
 #define KPROBE(ST_NAME, HANDLER_FUNC)                                          \

@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <linux/types.h>
 #include <linux/bpf.h>
+#include <stdbool.h>
 
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_core_read.h>
@@ -78,40 +79,60 @@ struct {
   __type(value, uint32_t);
 } iface_map SEC(".maps");
 
-#define __noinline __attribute__((noinline))
+struct {
+  __uint(type, BPF_MAP_TYPE_HASH);
+  __uint(max_entries, 1024);
+  __type(key, uint64_t);
+  __type(value, bool);
+} is_seen SEC(".maps");
 
-static uint64_t get_func_ip(void *ctx);
+#define __noinline __attribute__((noinline))
 
 static __always_inline int
 handle_sk_buff(struct pt_regs *ctx, uint8_t is_return, struct sk_buff *skb)
 {
-  uint32_t skb_iif, vr_skb_iif, *t_vr_skb_iif;
-  uint32_t dev_ifindex, vr_dev_ifindex, *t_vr_dev_ifindex;
+  bool value = true;
   struct vrft_event e = {0};
+  uint64_t ip = bpf_get_func_ip(ctx);
 
-  skb_iif = (uint32_t)BPF_CORE_READ(skb, skb_iif);
-  dev_ifindex = (uint32_t)BPF_CORE_READ(skb, dev, ifindex);
+  if (is_return == 0) {
+    uint32_t skb_iif, vr_skb_iif, *t_vr_skb_iif;
+    uint32_t dev_ifindex, vr_dev_ifindex, *t_vr_dev_ifindex;
 
-  t_vr_skb_iif = bpf_map_lookup_elem(&iface_map, &skb_iif);
-  t_vr_dev_ifindex = bpf_map_lookup_elem(&iface_map, &dev_ifindex);
+    skb_iif = (uint32_t)BPF_CORE_READ(skb, skb_iif);
+    dev_ifindex = (uint32_t)BPF_CORE_READ(skb, dev, ifindex);
 
-  if (t_vr_dev_ifindex == NULL)
-    vr_dev_ifindex = 0;
-  else
-    __builtin_memcpy_inline(&vr_dev_ifindex, t_vr_dev_ifindex,
-                            sizeof(uint32_t));
+    t_vr_skb_iif = bpf_map_lookup_elem(&iface_map, &skb_iif);
+    t_vr_dev_ifindex = bpf_map_lookup_elem(&iface_map, &dev_ifindex);
 
-  if (t_vr_skb_iif == NULL)
-    vr_skb_iif = 0;
-  else
-    __builtin_memcpy_inline(&vr_skb_iif, t_vr_skb_iif, sizeof(uint32_t));
+    if (t_vr_dev_ifindex == NULL)
+      vr_dev_ifindex = 0;
+    else
+      __builtin_memcpy_inline(&vr_dev_ifindex, t_vr_dev_ifindex,
+                              sizeof(uint32_t));
 
-  if (vr_skb_iif < 1 && vr_dev_ifindex < 1)
+    if (t_vr_skb_iif == NULL)
+      vr_skb_iif = 0;
+    else
+      __builtin_memcpy_inline(&vr_skb_iif, t_vr_skb_iif, sizeof(uint32_t));
+
+    if (vr_skb_iif < 1 && vr_dev_ifindex < 1)
+      return 0;
+
+    int ret = bpf_map_update_elem(&is_seen, &ip, &value, 0);
+    if (ret < 0)
+      return 0;
+  }
+
+  if (is_return == 1 && bpf_map_lookup_elem(&is_seen, &ip)) {
+    bpf_map_delete_elem(&is_seen, &ip);
+  } else if (is_return == 1) {
     return 0;
+  }
 
   e.packet_id = (uint64_t)skb;
   e.tstamp = bpf_ktime_get_ns();
-  e.faddr = PT_REGS_IP((struct pt_regs *)ctx) - 1;
+  e.faddr = ip;
   e.processor_id = bpf_get_smp_processor_id();
   e.is_return = is_return;
 
@@ -124,12 +145,22 @@ static __always_inline int
 handle_vr_packet(struct pt_regs *ctx, uint8_t is_return, struct vr_packet *pkt)
 {
   struct vrft_event e = {0};
+  bool value = true;
 
   e.packet_id = (uint64_t)pkt;
   e.tstamp = bpf_ktime_get_ns();
-  e.faddr = get_func_ip(ctx);
+  e.faddr = bpf_get_func_ip(ctx);
   e.processor_id = bpf_get_smp_processor_id();
   e.is_return = is_return;
+
+  uint64_t ip = bpf_get_func_ip(ctx);
+  int ret = bpf_map_update_elem(&is_seen, &ip, &value, 0);
+
+  if (is_return != 1 && ret < 0) {
+    return -1;
+  } else if (is_return == 1 && bpf_map_lookup_elem(&is_seen, &e.faddr)) {
+    bpf_map_delete_elem(&is_seen, &e.faddr);
+  }
 
   bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &e, sizeof(e));
 

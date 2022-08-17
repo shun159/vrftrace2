@@ -13,6 +13,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"log"
+	"strings"
 	"unsafe"
 
 	bpf "github.com/aquasecurity/libbpfgo"
@@ -26,10 +27,11 @@ const maxArgPos = 5
 const ATTACH_RESULT_FMT = "\rAttaching program (total: %d, succeeded: %d)"
 
 type VrfraceKprobeSpec struct {
-	btf_file  string
-	symdb     SymbolDb
-	module    *bpf.Module
-	prog2func map[string][]string
+	btf_file    string
+	symdb       SymbolDb
+	module      *bpf.Module
+	prog2func   map[string][]string
+	print_state *printFgraphState
 }
 
 type KprobePerfEvent struct {
@@ -38,7 +40,7 @@ type KprobePerfEvent struct {
 	Faddr       uint64
 	Fname       string
 	ProcessorId uint32
-	IsReturn    uint8
+	IsReturn    bool
 }
 
 func (spec VrfraceKprobeSpec) handleKprobeEvent(event chan []byte) {
@@ -48,13 +50,23 @@ func (spec VrfraceKprobeSpec) handleKprobeEvent(event chan []byte) {
 		perf.Tstamp = binary.LittleEndian.Uint64(b[8:16])
 		perf.Faddr = binary.LittleEndian.Uint64(b[16:24])
 		perf.ProcessorId = binary.LittleEndian.Uint32(b[24:28])
+
+		//binary.LittleEndian.Uint32(b[28:31])
+
+		is_return := b[31:32][0]
+		perf.IsReturn = false
+
+		if is_return == 1 {
+			perf.IsReturn = true
+		}
+
 		fname, err := spec.symdb.FindSymByFaddr(perf.Faddr)
 		if err != nil {
 			fmt.Printf("err: %v", err)
 		}
 
 		perf.Fname = fname
-		printKprobeEvent(perf)
+		spec.print_state.printKprobeEvent(perf)
 	}
 }
 
@@ -89,13 +101,16 @@ func (spec *VrfraceKprobeSpec) loadObject() error {
  */
 func (spec *VrfraceKprobeSpec) mapProgName2Func() error {
 	prog2func := map[string][]string{}
+
 	for st_name, pos2func := range spec.symdb.Pos2Func {
 		for fname, pos := range pos2func {
-			prog_name := fmt.Sprintf("%s%d", st_name, pos)
-			if _, ok := prog2func[prog_name]; !ok {
-				prog2func[prog_name] = []string{}
+			for _, prefix := range []string{"kprobe", "kretprobe"} {
+				prog_name := fmt.Sprintf("%s_%s%d", prefix, st_name, pos)
+				if _, ok := prog2func[prog_name]; !ok {
+					prog2func[prog_name] = []string{}
+				}
+				prog2func[prog_name] = append(prog2func[prog_name], fname)
 			}
-			prog2func[prog_name] = append(prog2func[prog_name], fname)
 		}
 	}
 
@@ -120,7 +135,15 @@ func (spec *VrfraceKprobeSpec) attachKprobe() error {
 		fnames, prog2func_found := spec.prog2func[prog_name]
 		if prog2func_found {
 			for _, fname := range fnames {
-				link, err := prog.AttachKprobe(fname)
+				var link *bpf.BPFLink
+				var err error
+
+				if strings.HasPrefix(prog_name, "kretprobe") {
+					link, err = prog.AttachKretprobe(fname)
+				} else {
+					link, err = prog.AttachKprobe(fname)
+				}
+
 				if err != nil {
 					fmt.Printf("Failed to attach program: %s fname: %s abort!\n", prog_name, fname)
 					return err
@@ -195,6 +218,7 @@ func InitKprobe(btf_file string, args SymbolDbArgs) (*bpf.PerfBuffer, error) {
 	}
 
 	spec := VrfraceKprobeSpec{}
+	spec.print_state = &printFgraphState{0}
 	spec.symdb = *symdb
 
 	if err := spec.createModule(btf_file); err != nil {
