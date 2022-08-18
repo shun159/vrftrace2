@@ -122,9 +122,7 @@ handle_sk_buff(struct pt_regs *ctx, uint8_t is_return, struct sk_buff *skb)
     int ret = bpf_map_update_elem(&is_seen, &ip, &value, 0);
     if (ret < 0)
       return 0;
-  }
-
-  if (is_return == 1 && bpf_map_lookup_elem(&is_seen, &ip)) {
+  } else if (is_return == 1 && bpf_map_lookup_elem(&is_seen, &ip)) {
     bpf_map_delete_elem(&is_seen, &ip);
   } else if (is_return == 1) {
     return 0;
@@ -160,6 +158,8 @@ handle_vr_packet(struct pt_regs *ctx, uint8_t is_return, struct vr_packet *pkt)
     return -1;
   } else if (is_return == 1 && bpf_map_lookup_elem(&is_seen, &e.faddr)) {
     bpf_map_delete_elem(&is_seen, &e.faddr);
+  } else if (is_return == 1) {
+    return 0;
   }
 
   bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &e, sizeof(e));
