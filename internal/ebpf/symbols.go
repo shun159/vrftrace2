@@ -36,9 +36,12 @@ func (symsdb *SymbolDb) CountPos2Func() int {
 }
 
 func (symsdb *SymbolDb) FindSymByFaddr(faddr uint64) (string, error) {
-	if fname, ok := symsdb.FuncAddr[faddr]; !ok {
-		err := fmt.Errorf("%X doesn't exist in kallsyms", faddr)
-		return "", err
+	if fname, ok := symsdb.FuncAddr[faddr-4]; !ok {
+		if fname, ok = symsdb.FuncAddr[faddr]; !ok {
+			err := fmt.Errorf("%x doesn't exist in kallsyms", faddr)
+			return "", err
+		}
+		return fname, nil
 	} else {
 		return fname, nil
 	}
